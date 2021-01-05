@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Principal View</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css" integrity="sha384-/rXc/GQVaYpyDdyxK+ecHPVYJSN9bmVFBvjA/9eOB+pb3F2w2N6fc5qB9Ew5yIns" crossorigin="anonymous">
+    <style>
+        #btn_{
+            width: 10px;
+            height: 10px;
+            color: white;
+            background: #00CE54;
+            border-radius: 25px;
+        }
+
+        #m{
+            background: #A6A6A6;
+        }
+    </style>
+</head>
+<body>
+
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-10 text-center">
+                <h2>ChatAplication</h2>
+            </div>
+            <div class="col-md-2 text-center">
+                <h2>Activos</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-2">
+        <div class="row">
+            <div class="col-md-10">
+                <div class="card bg-dark" style="height: 30rem;">
+                    <ul id="t" class="list-group list-group-flush">
+                        
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="ml-1 card bg-dark text-white text-center" style="height: 30rem;" id="lc">
+                    
+
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+
+    <div class="container fixed-bottom mb-1">
+        <div class="row">
+            <div class="col-md-10">
+                <input type="text" id="m" class="form-control" name="" id="" placeholder="Message">
+            </div>
+            <div class="col md-4 ">
+                <button class="btn btn-primary btn-block" onclick="sendMessage()">Send</button>
+                <a href="/salir" class="btn btn-danger btn-block">Salir</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        
+        let name = Nombre;
+        let socket = io();
+
+        window.onload = (event) =>{
+            socket.emit('start call', name);
+        }
+                                                                                                                                        
+        window.onbeforeunload = (event)=>{
+            socket.emit('end call', name);
+        }
+
+        function sendMessage(){
+            
+            var content = document.getElementById('m').value
+            socket.emit('chat message', content, name);
+            console.log(name);
+            document.getElementById('m').value = "";
+            
+        }
+
+
+
+
+        //config socket
+        socket.on('chat message', (msg, name) =>{
+                var cont = document.getElementById('m').value
+                console.log("pasamos pora aca");
+                document.getElementById('t').innerHTML += `<li class="list-group-item"><b>${name} </b>${msg}</li>`;
+        });
+        
+        socket.on('start call', (elements) =>{
+            console.log(elements);
+            var table_line = document.getElementById('lc');
+            table_line.innerHTML = ``;
+
+            for(var i = 0; i < elements.length; i++){
+                table_line.innerHTML += `<b>${elements[i]}  <input type="submit" id="btn_" class="ml-1 btn"> </b>`;
+            }
+        });
+
+        socket.on('end call', (elements) =>{
+            console.log(elements);
+            var table_line = document.getElementById('lc');
+            table_line.innerHTML = ``;
+            for(var i = 0; i < elements.length; i++){
+                table_line.innerHTML += `<b>${elements[i]}  <input type="submit" id="btn_" class="ml-1 btn"> </b>`;
+            }
+        });
+
+
+
+
+
+
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+</body>
+</html>
